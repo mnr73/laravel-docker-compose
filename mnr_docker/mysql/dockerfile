@@ -1,0 +1,10 @@
+FROM mysql
+
+# RUN echo "[mysqld]" > /etc/mysql/conf.d
+# RUN echo "innodb_buffer_pool_size = 8G" >> /etc/mysql/conf.d
+# RUN echo "innodb_log_buffer_size = 256M" >> /etc/mysql/conf.d
+# RUN echo "innodb_log_file_size = 1G" >> /etc/mysql/conf.d
+# RUN echo "innodb_write_io_threads = 16" >> /etc/mysql/conf.d
+# RUN echo "innodb_flush_log_at_trx_commit = 0" >> /etc/mysql/conf.d
+# RUN echo "max_connections = 500" >> /etc/mysql/conf.d
+# RUN echo "innodb_doublewrite = 0" >> /etc/mysql/conf.d

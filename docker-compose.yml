@@ -1,0 +1,64 @@
+version: '3.9'
+
+services:
+    mnr-laravel:
+        extends:
+            file: docker-compose-common.yml
+            service: mnr-laravel
+        ports:
+            - '80:80'
+        depends_on:
+            - mysql
+            - redis
+            - composer
+
+    node:
+        extends:
+            file: docker-compose-common.yml
+            service: node
+        ports:
+            - 5173:5173
+            - 4173:4173
+        command: npm run dev -- --host
+        # command: tail -f /dev/null
+
+    composer:
+        extends:
+            file: docker-compose-common.yml
+            service: composer
+
+    mysql:
+        extends:
+            file: docker-compose-common.yml
+            service: mysql
+        ports:
+            - '3306:3306'
+
+    redis:
+        extends:
+            file: docker-compose-common.yml
+            service: redis
+        ports:
+            - '6379:6379'
+
+    phpmyadmin:
+        extends:
+            file: docker-compose-common.yml
+            service: phpmyadmin
+        ports:
+            - '8080:80'
+
+    mailhog:
+        container_name: '${APP_NAME}-mailhog'
+        image: 'mailhog/mailhog:latest'
+        ports:
+            - '1025:1025'
+            - '8025:8025'
+
+networks:
+    mnr-network:
+volumes:
+    mnr-mysql:
+        driver: local
+    mnr-redis:
+        driver: local

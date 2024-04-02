@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+chmod -R 775 storage/logs
+/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+
+apache2-foreground

@@ -1,0 +1,91 @@
+version: '3.9'
+
+services:
+    mnr-laravel:
+        container_name: '${APP_NAME}-laravel'
+        build: './mnr_docker/php/8.2'
+        image: 'mnr-laravel-10/laravel'
+        restart: unless-stopped
+        volumes:
+            - '.:/var/www/html'
+        networks:
+            - mnr-network
+
+    node:
+        container_name: '${APP_NAME}-node'
+        image: node:lts
+        user: node:node
+        restart: unless-stopped
+        working_dir: /project
+        volumes:
+            - '.:/project'
+        # command: tail -f /dev/null
+        command: npm run dev -- --host
+
+    composer:
+        container_name: '${APP_NAME}-composer'
+        build: './mnr_docker/composer'
+        image: 'mnr-laravel-10/composer'
+        restart: unless-stopped
+        working_dir: /project
+        volumes:
+            - '.:/project'
+
+    mysql:
+        container_name: '${APP_NAME}-mysql'
+        build: './mnr_docker/mysql'
+        image: 'mnr-laravel-10/mysql'
+        restart: unless-stopped
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_DATABASE: '${DB_DATABASE}'
+            MYSQL_USER: '${DB_USERNAME}'
+            MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+        cap_add:
+            - SYS_NICE
+        volumes:
+            - 'mnr-mysql:/var/lib/mysql'
+        networks:
+            - mnr-network
+        healthcheck:
+            test: [ 'CMD', 'mysqladmin', 'ping', '-p${DB_PASSWORD}' ]
+            retries: 3
+            timeout: 5s
+
+    redis:
+        container_name: '${APP_NAME}-redis'
+        build: './mnr_docker/redis'
+        image: 'mnr-laravel-10/redis'
+        restart: unless-stopped
+        volumes:
+            - 'mnr-redis:/data'
+        networks:
+            - mnr-network
+        healthcheck:
+            test: [ 'CMD', 'redis-cli', 'ping' ]
+            retries: 3
+            timeout: 5s
+
+    phpmyadmin:
+        container_name: '${APP_NAME}-phpmyadmin'
+        image: phpmyadmin
+        restart: unless-stopped
+        networks:
+            - mnr-network
+        environment:
+            - PMA_HOST=mysql
+
+    mailhog:
+        container_name: '${APP_NAME}-mailhog'
+        image: 'mailhog/mailhog:latest'
+        networks:
+            - mnr-network
+
+networks:
+    mnr-network:
+volumes:
+    mnr-mysql:
+        driver: local
+    mnr-redis:
+        driver: local

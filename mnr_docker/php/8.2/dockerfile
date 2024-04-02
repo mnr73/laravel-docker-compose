@@ -1,0 +1,52 @@
+FROM php:8.2-apache
+
+
+ENV TZ=UTC
+# in some case you shuld change user id (1000)
+ENV WWWGROUP 1000
+ENV WWWUSER 1000
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+ENV USERNAME www-data
+
+RUN apt-get update -y && apt-get install -y cron supervisor
+
+#install packages for working with images. libraries like https://image.intervention.io/ need this.
+RUN apt-get install -y libpng-dev libjpeg-dev libwebp-dev libfreetype6-dev libjpeg62-turbo-dev
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
+
+# install redis
+RUN pecl install redis-5.3.4 && docker-php-ext-enable redis
+
+# install and enable mysqli db requirements
+RUN docker-php-ext-install mysqli pdo pdo_mysql gd
+RUN docker-php-ext-enable mysqli pdo pdo_mysql gd
+
+# you can add other package like trader
+# RUN pecl install trader && docker-php-ext-enable trader
+
+RUN a2enmod rewrite
+
+RUN usermod -u $WWWUSER $USERNAME
+RUN groupmod -g $WWWGROUP $USERNAME
+
+
+
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY 000-default.conf /etc/apache2/sites-available
+
+# scheduler
+RUN echo "* * * * * www-data /usr/local/bin/php /var/www/html/artisan schedule:run >> /dev/null 2>&1" > /etc/cron.d/scheduler
+RUN chmod 0644 /etc/cron.d/scheduler \
+    && crontab /etc/cron.d/scheduler
+
+COPY start-container /usr/local/bin/start-container
+RUN chmod +x /usr/local/bin/start-container
+
+RUN mkdir -p /var/www/.config/psysh
+RUN chmod -R 755 /var/www/.config
+RUN chown -R www-data:www-data /var/www/.config
+
+# you can add php config 👇
+# RUN echo "memory_limit = 2048M" > $PHP_INI_DIR/conf.d/config.ini
+
+ENTRYPOINT ["start-container"]
