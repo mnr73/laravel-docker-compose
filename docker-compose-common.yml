@@ -3,8 +3,8 @@ version: '3.9'
 services:
     mnr-laravel:
         container_name: '${APP_NAME}-laravel'
-        build: './mnr_docker/php/8.2'
-        image: 'mnr-laravel-10/laravel'
+        build: './mnr_docker/php/8.3'
+        image: 'mnr-laravel-11/laravel'
         restart: unless-stopped
         volumes:
             - '.:/var/www/html'
@@ -25,7 +25,7 @@ services:
     composer:
         container_name: '${APP_NAME}-composer'
         build: './mnr_docker/composer'
-        image: 'mnr-laravel-10/composer'
+        image: 'mnr-laravel-11/composer'
         restart: unless-stopped
         working_dir: /project
         volumes:
@@ -34,7 +34,7 @@ services:
     mysql:
         container_name: '${APP_NAME}-mysql'
         build: './mnr_docker/mysql'
-        image: 'mnr-laravel-10/mysql'
+        image: 'mnr-laravel-11/mysql'
         restart: unless-stopped
         environment:
             MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
@@ -56,7 +56,7 @@ services:
     redis:
         container_name: '${APP_NAME}-redis'
         build: './mnr_docker/redis'
-        image: 'mnr-laravel-10/redis'
+        image: 'mnr-laravel-11/redis'
         restart: unless-stopped
         volumes:
             - 'mnr-redis:/data'

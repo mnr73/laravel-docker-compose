@@ -1,17 +1,17 @@
 {
     "editor.formatOnSave": true,
-    "php.version": "8.2",
+    "php.version": "8.3",
     "emeraldwalk.runonsave": {
         "commands": [
             {
                 "match": "app/Models/.*\\.php$",
                 "isAsync": true,
-                "cmd": "docker exec shop-laravel php artisan ide-helper:models -n"
+                "cmd": "docker exec Laravel-laravel php artisan ide-helper:models -n"
             },
             {
                 "match": "app/.*\\.php$",
                 "isAsync": true,
-                "cmd": "docker exec shop-laravel php artisan ide-helper:generate"
+                "cmd": "docker exec Laravel-laravel php artisan ide-helper:generate"
             }
         ]
     }
