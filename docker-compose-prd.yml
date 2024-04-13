@@ -1,24 +1,22 @@
-version: '3.9'
-
 services:
     mnr-laravel:
         extends:
             file: docker-compose-common.yml
             service: mnr-laravel
         ports:
-            - '8000:80'
+            - "8000:80"
         restart: unless-stopped
         depends_on:
             - mysql
             - redis
             - composer
 
-    node:
-        extends:
-            file: docker-compose-common.yml
-            service: node
-        # command: npm run dev -- --host
-        command: tail -f /dev/null
+    # node:
+    #     extends:
+    #         file: docker-compose-common.yml
+    #         service: node
+    #     # command: npm run dev -- --host
+    #     command: tail -f /dev/null
 
     composer:
         extends:
@@ -40,7 +38,7 @@ services:
             file: docker-compose-common.yml
             service: phpmyadmin
         ports:
-            - '8080:80'
+            - "8080:80"
 
 networks:
     mnr-network:
