@@ -6,12 +6,12 @@
             {
                 "match": "app/Models/.*\\.php$",
                 "isAsync": true,
-                "cmd": "docker exec Laravel-laravel php artisan ide-helper:models -n"
+                "cmd": "docker compose exec laravel php artisan ide-helper:models -n"
             },
             {
                 "match": "app/.*\\.php$",
                 "isAsync": true,
-                "cmd": "docker exec Laravel-laravel php artisan ide-helper:generate"
+                "cmd": "docker compose exec laravel php artisan ide-helper:generate"
             }
         ]
     }
