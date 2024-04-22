@@ -20,15 +20,6 @@ services:
     #     # command: tail -f /dev/null
     #     command: npm run dev -- --host
 
-    composer:
-        container_name: "${APP_NAME}-composer"
-        build: "./mnr_docker/composer"
-        image: "mnr-laravel-11/composer"
-        restart: unless-stopped
-        working_dir: /project
-        volumes:
-            - ".:/project"
-
     mysql:
         container_name: "${APP_NAME}-mysql"
         build: "./mnr_docker/mysql"

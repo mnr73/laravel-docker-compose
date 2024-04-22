@@ -10,6 +10,12 @@ ENV USERNAME www-data
 
 RUN apt-get update -y && apt-get install -y cron supervisor
 
+#install composer
+RUN curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
+RUN HASH=`curl -sS https://composer.github.io/installer.sig`
+RUN php -r "if (hash_file('SHA384', '/tmp/composer-setup.php') === '$HASH') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+RUN php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
+
 #install packages for working with images. libraries like https://image.intervention.io/ need this.
 RUN apt-get install -y libpng-dev libjpeg-dev libwebp-dev libfreetype6-dev libjpeg62-turbo-dev
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
@@ -45,6 +51,10 @@ RUN chmod +x /usr/local/bin/start-container
 RUN mkdir -p /var/www/.config/psysh
 RUN chmod -R 755 /var/www/.config
 RUN chown -R www-data:www-data /var/www/.config
+
+RUN mkdir -p /var/www/.composer
+RUN chmod -R 755 /var/www/.composer
+RUN chown -R www-data:www-data /var/www/.composer
 
 # you can add php config 👇
 # RUN echo "memory_limit = 2048M" > $PHP_INI_DIR/conf.d/config.ini

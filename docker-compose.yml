@@ -8,7 +8,6 @@ services:
         depends_on:
             - mysql
             - redis
-            - composer
 
     #
     # node:
@@ -20,11 +19,6 @@ services:
     #         - 4173:4173
     #     command: npm run dev -- --host
     # command: tail -f /dev/null
-
-    composer:
-        extends:
-            file: docker-compose-common.yml
-            service: composer
 
     mysql:
         extends:

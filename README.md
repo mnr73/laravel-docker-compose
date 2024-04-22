@@ -32,7 +32,7 @@ DB_PASSWORD=password
 ```
 
 - step 5: change other env variable if you need and run `docker compose up -d`
-- step 6: run `docker compose exec -it -u 1000 composer composer install --ignore-platform-reqs`
+- step 6: run `docker compose exec -it -u 1000 laravel composer install`
 - step 7: run `docker compose exec -it -u 1000 laravel php artisan key:generate`
 - step 8: run `docker compose exec -it -u 1000 laravel php artisan migrate`
 - step 9: open [localhost](http://localhost) to see laravel welcome page
