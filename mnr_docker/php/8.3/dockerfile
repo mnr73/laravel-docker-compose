@@ -8,7 +8,7 @@ ENV WWWUSER 1000
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 ENV USERNAME www-data
 
-RUN apt-get update -y && apt-get install -y cron supervisor
+RUN apt-get update -y && apt-get install -y cron supervisor unzip
 
 #install composer
 RUN curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
