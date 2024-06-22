@@ -1,8 +1,8 @@
 services:
-    mnr-laravel:
+    laravel:
         extends:
             file: docker-compose-common.yml
-            service: mnr-laravel
+            service: laravel
         ports:
             - "8000:80"
         restart: unless-stopped
