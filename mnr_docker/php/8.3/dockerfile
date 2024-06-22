@@ -10,12 +10,6 @@ ENV USERNAME www-data
 
 RUN apt-get update -y && apt-get install -y cron supervisor unzip
 
-#install composer
-RUN curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
-RUN HASH=`curl -sS https://composer.github.io/installer.sig`
-RUN php -r "if (hash_file('SHA384', '/tmp/composer-setup.php') === '$HASH') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-RUN php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
-
 #install packages for working with images. libraries like https://image.intervention.io/ need this.
 RUN apt-get install -y libpng-dev libjpeg-dev libwebp-dev libfreetype6-dev libjpeg62-turbo-dev
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
@@ -26,6 +20,10 @@ RUN pecl install redis && docker-php-ext-enable redis
 # install and enable mysqli db requirements
 RUN docker-php-ext-install mysqli pdo pdo_mysql gd
 RUN docker-php-ext-enable mysqli pdo pdo_mysql gd
+
+#install composer
+ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN install-php-extensions @composer-2
 
 # you can add other package like trader
 # RUN pecl install trader && docker-php-ext-enable trader
@@ -43,7 +41,7 @@ COPY 000-default.conf /etc/apache2/sites-available
 # scheduler
 RUN echo "* * * * * www-data /usr/local/bin/php /var/www/html/artisan schedule:run >> /dev/null 2>&1" > /etc/cron.d/scheduler
 RUN chmod 0644 /etc/cron.d/scheduler \
-    && crontab /etc/cron.d/scheduler
+	&& crontab /etc/cron.d/scheduler
 
 COPY start-container /usr/local/bin/start-container
 RUN chmod +x /usr/local/bin/start-container
