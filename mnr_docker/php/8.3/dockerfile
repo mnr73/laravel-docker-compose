@@ -8,7 +8,7 @@ ENV WWWUSER 1000
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 ENV USERNAME www-data
 
-RUN apt-get update -y && apt-get install -y cron supervisor unzip
+RUN apt-get update -y && apt-get install -y cron supervisor unzip libzip-dev
 
 #install packages for working with images. libraries like https://image.intervention.io/ need this.
 RUN apt-get install -y libpng-dev libjpeg-dev libwebp-dev libfreetype6-dev libjpeg62-turbo-dev
@@ -18,8 +18,8 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
 RUN pecl install redis && docker-php-ext-enable redis
 
 # install and enable mysqli db requirements
-RUN docker-php-ext-install mysqli pdo pdo_mysql gd
-RUN docker-php-ext-enable mysqli pdo pdo_mysql gd
+RUN docker-php-ext-install mysqli pdo pdo_mysql gd zip
+RUN docker-php-ext-enable mysqli pdo pdo_mysql gd zip
 
 #install composer
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
@@ -41,7 +41,7 @@ COPY 000-default.conf /etc/apache2/sites-available
 # scheduler
 RUN echo "* * * * * www-data /usr/local/bin/php /var/www/html/artisan schedule:run >> /dev/null 2>&1" > /etc/cron.d/scheduler
 RUN chmod 0644 /etc/cron.d/scheduler \
-	&& crontab /etc/cron.d/scheduler
+    && crontab /etc/cron.d/scheduler
 
 COPY start-container /usr/local/bin/start-container
 RUN chmod +x /usr/local/bin/start-container
